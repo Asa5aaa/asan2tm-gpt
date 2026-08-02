@@ -1,0 +1,60 @@
+﻿<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>چت با asan2tm-gpt</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="chat-container">
+        <!-- هدر چت -->
+        <div class="chat-header">
+            <button onclick="goHome()" class="btn-back">←</button>
+            <div class="chat-title">
+                <span class="online-dot"></span>
+                asan2tm-gpt
+            </div>
+            <div class="dropdown">
+                <button class="dropdown-btn" onclick="toggleDropdown()">⋮</button>
+                <div id="dropdownMenu" class="dropdown-content">
+                    <button onclick="saveChat()">💾 ذخیره چت</button>
+                    <button onclick="loadChat()">📂 باز کردن چت</button>
+                    <button onclick="deleteChat()">🗑️ حذف چت</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- بخش پیام‌ها -->
+        <div id="chatMessages" class="chat-messages">
+            <div class="welcome-message">
+                <p>🤖 سلام! من WormGPT هستم.</p>
+                <p>هر سوالی داری، بپرس. هیچ محدودیتی وجود ندارد.</p>
+            </div>
+        </div>
+
+        <!-- بخش تایپ -->
+        <div class="chat-input-area">
+            <div class="input-wrapper">
+                <button onclick="attachFile()" class="btn-attach">📎</button>
+                <textarea id="messageInput" rows="2" placeholder="پیام خود را بنویسید..." onkeydown="handleKeyDown(event)"></textarea>
+                <button onclick="sendMessage()" class="btn-send">➤</button>
+            </div>
+            <div id="filePreview" class="file-preview" style="display:none;">
+                <span id="fileName"></span>
+                <button onclick="removeFile()">✕</button>
+            </div>
+        </div>
+
+        <!-- وضعیت تایپ -->
+        <div id="typingStatus" class="typing-status" style="display:none;">
+            <span>🤖 در حال تایپ...</span>
+        </div>
+    </div>
+
+    <input type="file" id="fileInput" style="display:none" multiple onchange="handleFileSelect(event)">
+
+    <script src="js/chat.js"></script>
+</body>
+</html>

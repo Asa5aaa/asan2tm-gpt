@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>asan2tm-gpt | هوش مصنوعی نامحدود</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fingerprintjs2/2.1.0/fingerprint2.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- بخش اصلی -->
+        <div class="main-card">
+            <!-- لوگو و عنوان -->
+            <div class="logo-section">
+                <div class="logo">A</div>
+                <h1 class="app-title">asan2tm-gpt</h1>
+                <p class="app-subtitle">هوش مصنوعی بدون محدودیت</p>
+            </div>
+
+            <!-- دو گزینه اصلی -->
+            <div class="options-grid">
+                <!-- گزینه ۱: ورود -->
+                <div class="option-card" onclick="showLogin()">
+                    <div class="option-icon">🔐</div>
+                    <h3>ورود</h3>
+                    <p>برای کاربران ثبت‌نام شده</p>
+                </div>
+
+                <!-- گزینه ۲: خرید -->
+                <div class="option-card" onclick="showPurchase()">
+                    <div class="option-icon">🛒</div>
+                    <h3>خرید اشتراک</h3>
+                    <p>دریافت دسترسی نامحدود</p>
+                </div>
+            </div>
+
+            <!-- وضعیت سیستم -->
+            <div id="systemStatus" class="system-status">
+                <span class="status-dot"></span>
+                سیستم فعال
+            </div>
+        </div>
+
+        <!-- مودال ورود -->
+        <div id="loginModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal('loginModal')">&times;</span>
+                <h2>🔐 ورود به حساب کاربری</h2>
+                <form id="loginForm" onsubmit="handleLogin(event)">
+                    <div class="form-group">
+                        <label>ایمیل</label>
+                        <input type="email" id="loginEmail" placeholder="example@email.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label>رمز عبور</label>
+                        <input type="password" id="loginPassword" placeholder="رمز خود را وارد کنید" required>
+                    </div>
+                    <button type="submit" class="btn-primary">ورود</button>
+                </form>
+                <div id="loginError" class="error-message"></div>
+            </div>
+        </div>
+
+        <!-- مودال خرید با ایمیل و سه زبان -->
+        <div id="purchaseModal" class="modal">
+            <div class="modal-content purchase-modal">
+                <span class="close" onclick="closeModal('purchaseModal')">&times;</span>
+                <h2>🚀 به دنیای نامحدود خوش آمدید!</h2>
+                
+                <div class="purchase-message">
+                    <p class="persian">
+                        🔥 با خرید اشتراک asan2tm-gpt، به یک هوش مصنوعی قدرتمند و بدون محدودیت دسترسی پیدا کنید.<br>
+                        هر سوالی دارید، هرچقدر هم پیچیده یا غیرمتعارف، پاسخ خواهید گرفت.<br>
+                        بدون سانسور، بدون محدودیت، بدون قضاوت.
+                    </p>
+                    <p class="english">
+                        🔥 Get unlimited access to a powerful, unrestricted AI.<br>
+                        No filters, no limits, no judgment.<br>
+                        Ask anything, get honest answers.
+                    </p>
+                    <p class="arabic">
+                        🔥 احصل على وصول غير محدود إلى ذكاء اصطناعي قوي بدون قيود.<br>
+                        بدون رقابة، بدون حدود، بدون أحكام.<br>
+                        اسأل أي شيء، احصل على إجابات صادقة.
+                    </p>
+                </div>
+
+                <div class="purchase-contact">
+                    <p>📧 برای خرید، به ایمیل زیر پیام دهید:</p>
+                    <div class="email-box">
+                        <span>asa.ss.hc@gmail.com</span>
+                        <button onclick="copyEmail()" class="btn-copy">📋</button>
+                    </div>
+                    <p class="purchase-note">پس از پرداخت، اکانت شما فعال‌سازی می‌شود.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/device.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

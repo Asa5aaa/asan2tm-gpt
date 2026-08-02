@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>دریافت Device ID</title>
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fingerprintjs2/2.1.0/fingerprint2.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Vazirmatn', Tahoma, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            direction: rtl;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .card {
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(20px);
+            border-radius: 30px;
+            padding: 40px;
+            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+            text-align: center;
+        }
+
+        .logo {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #4CAF50, #2196F3, #FF9800);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            font-weight: bold;
+            margin: 0 auto 15px;
+            color: white;
+            box-shadow: 0 10px 30px rgba(76, 175, 80, 0.3);
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #4CAF50, #2196F3, #FF9800);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            color: #aaa;
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+
+        .device-box {
+            background: rgba(255,255,255,0.05);
+            border-radius: 16px;
+            padding: 20px;
+            border: 2px solid rgba(76, 175, 80, 0.3);
+            margin-bottom: 20px;
+            word-break: break-all;
+        }
+
+        .device-id {
+            font-size: 18px;
+            font-weight: bold;
+            color: #4CAF50;
+            font-family: monospace;
+            letter-spacing: 1px;
+        }
+
+        .btn-copy {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #4CAF50, #2196F3);
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s;
+            font-family: inherit;
+        }
+
+        .btn-copy:hover {
+            transform: scale(1.02);
+        }
+
+        .btn-copy.copied {
+            background: linear-gradient(135deg, #FF9800, #f44336);
+        }
+
+        .info-text {
+            color: #888;
+            font-size: 13px;
+            margin-top: 20px;
+            line-height: 2;
+        }
+
+        .info-text strong {
+            color: #4CAF50;
+        }
+
+        .loading-text {
+            color: #888;
+            font-size: 16px;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 15px;
+            color: #4CAF50;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .copy-success {
+            color: #4CAF50;
+            font-size: 14px;
+            margin-top: 10px;
+            display: none;
+        }
+
+        .copy-success.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 480px) {
+            .card {
+                padding: 24px;
+            }
+            .device-id {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="logo">📱</div>
+            <h1>Device ID</h1>
+            <p class="subtitle">شناسه یکتای دستگاه شما</p>
+
+            <div class="device-box">
+                <div id="deviceIdDisplay" class="device-id">
+                    <span class="loading-text">⏳ در حال دریافت...</span>
+                </div>
+            </div>
+
+            <button id="copyBtn" class="btn-copy" onclick="copyDeviceId()">📋 کپی Device ID</button>
+
+            <div id="copySuccess" class="copy-success">✅ Device ID با موفقیت کپی شد!</div>
+
+            <div class="info-text">
+                🔒 این کد مختص <strong>دستگاه شما</strong> است.<br>
+                برای فعال‌سازی اشتراک، این کد را برای <strong>پشتیبانی</strong> ارسال کنید.<br>
+                <br>
+                📧 <strong>ایمیل پشتیبانی:</strong> asa.ss.hc@gmail.com
+            </div>
+
+            <a href="index.html" class="back-link">← بازگشت به صفحه اصلی</a>
+        </div>
+    </div>
+
+    <script>
+        // ============================================
+        // دریافت Device ID
+        // ============================================
+
+        function getDeviceId() {
+            let deviceId = localStorage.getItem('device_id');
+            if (deviceId) {
+                return deviceId;
+            }
+
+            // تولید Device ID جدید
+            if (typeof Fingerprint2 !== 'undefined') {
+                Fingerprint2.get({
+                    excludeMobile: false,
+                    excludeUserAgent: false,
+                    excludeLanguage: false,
+                    excludeColorDepth: false,
+                    excludeScreenResolution: false,
+                    excludeTimezoneOffset: false,
+                    excludeSessionStorage: false,
+                    excludeLocalStorage: false,
+                    excludePlugins: false,
+                    excludeCanvas: false,
+                    excludeWebgl: false,
+                    excludeAdBlock: false,
+                    excludeFonts: false
+                }, function(components) {
+                    const values = components.map(function(component) {
+                        return component.value;
+                    });
+                    deviceId = Fingerprint2.x64hash128(values.join(''), 31);
+                    localStorage.setItem('device_id', deviceId);
+                    showDeviceId(deviceId);
+                });
+            } else {
+                // Fallback
+                deviceId = 'dev_' + Date.now() + '_' + Math.random().toString(36).substring(7);
+                localStorage.setItem('device_id', deviceId);
+                showDeviceId(deviceId);
+            }
+            return deviceId;
+        }
+
+        function showDeviceId(deviceId) {
+            document.getElementById('deviceIdDisplay').textContent = deviceId;
+            document.getElementById('deviceIdDisplay').classList.remove('loading-text');
+        }
+
+        // ============================================
+        // کپی Device ID
+        // ============================================
+
+        function copyDeviceId() {
+            const text = document.getElementById('deviceIdDisplay').textContent;
+            if (!text || text.includes('در حال دریافت')) {
+                alert('⏳ لطفاً صبر کنید تا Device ID دریافت شود...');
+                return;
+            }
+
+            navigator.clipboard.writeText(text).then(() => {
+                showCopySuccess();
+            }).catch(() => {
+                // روش جایگزین
+                const textArea = document.createElement('textarea');
+                textArea.value = text;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                showCopySuccess();
+            });
+        }
+
+        function showCopySuccess() {
+            const btn = document.getElementById('copyBtn');
+            const success = document.getElementById('copySuccess');
+            
+            btn.textContent = '✅ کپی شد!';
+            btn.classList.add('copied');
+            success.classList.add('show');
+            
+            setTimeout(() => {
+                btn.textContent = '📋 کپی Device ID';
+                btn.classList.remove('copied');
+                success.classList.remove('show');
+            }, 3000);
+        }
+
+        // ============================================
+        // بارگذاری صفحه
+        // ============================================
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const deviceId = getDeviceId();
+            if (deviceId) {
+                showDeviceId(deviceId);
+            }
+        });
+    </script>
+</body>
+</html>
