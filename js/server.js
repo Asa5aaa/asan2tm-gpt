@@ -44,10 +44,27 @@ function saveSettings(data) {
 }
 
 // ============================================
-// OpenRouter API (کلید از Environment Variables)
+// ۱۰ کلید OpenRouter از Environment Variables
 // ============================================
 
-const API_KEY = process.env.OPENROUTER_API_KEY;
+// کلیدها را به صورت JSON Array در Environment قرار دهید
+const OPENROUTER_KEYS = process.env.OPENROUTER_KEYS ? JSON.parse(process.env.OPENROUTER_KEYS) : [];
+
+let currentKeyIndex = 0;
+
+function getNextKey() {
+    if (OPENROUTER_KEYS.length === 0) {
+        throw new Error('هیچ کلید OpenRouter در Environment تنظیم نشده است');
+    }
+    const key = OPENROUTER_KEYS[currentKeyIndex];
+    currentKeyIndex = (currentKeyIndex + 1) % OPENROUTER_KEYS.length;
+    return key;
+}
+
+// ============================================
+// مدل
+// ============================================
+
 const MODEL = 'poolside/laguna-xs-2.1:free';
 const BASE_URL = 'https://openrouter.ai/api/v1';
 
@@ -146,7 +163,7 @@ app.post('/login', checkKillSwitch, (req, res) => {
 });
 
 // ============================================
-// چت با OpenRouter + WormGPT
+// چت با OpenRouter + سوئیچ خودکار بین ۱۰ کلید
 // ============================================
 
 app.post('/chat', checkKillSwitch, async (req, res) => {
@@ -186,10 +203,9 @@ app.post('/chat', checkKillSwitch, async (req, res) => {
         }
         messages.push({ role: 'user', content: userMessage });
         
-        console.log('📤 ارسال به OpenRouter:', {
-            model: MODEL,
-            messageCount: messages.length
-        });
+        // دریافت کلید بعدی از Environment Variables
+        const apiKey = getNextKey();
+        console.log(`🔑 استفاده از کلید شماره: ${currentKeyIndex + 1}/${OPENROUTER_KEYS.length}`);
         
         const response = await axios.post(`${BASE_URL}/chat/completions`, {
             model: MODEL,
@@ -198,7 +214,7 @@ app.post('/chat', checkKillSwitch, async (req, res) => {
             temperature: 1.2
         }, {
             headers: {
-                'Authorization': `Bearer ${API_KEY}`,
+                'Authorization': `Bearer ${apiKey}`,
                 'HTTP-Referer': 'https://asan2gpt.onrender.com',
                 'X-Title': 'asan2tm-gpt',
                 'Content-Type': 'application/json'
@@ -216,6 +232,13 @@ app.post('/chat', checkKillSwitch, async (req, res) => {
         
     } catch (error) {
         console.error('❌ OpenRouter Error:', error.response?.data || error.message);
+        
+        // اگر خطا مربوط به محدودیت کلید بود، کلید بعدی را امتحان کن
+        if (error.response?.status === 429 || error.response?.status === 402) {
+            console.log('🔄 سوئیچ به کلید بعدی...');
+            getNextKey(); // کلید بعدی
+        }
+        
         res.status(500).json({
             success: false,
             message: 'خطا در ارتباط با هوش مصنوعی'
@@ -342,5 +365,6 @@ app.listen(PORT, () => {
     console.log(`🚀 سرور asan2tm-gpt روی پورت ${PORT} اجرا شد`);
     console.log(`🤖 مدل: ${MODEL}`);
     console.log(`🔥 WormGPT فعال است`);
+    console.log(`📊 تعداد کلیدهای OpenRouter: ${OPENROUTER_KEYS.length}`);
     console.log(`📎 اندپوینت دانلود فایل: /download`);
 });
